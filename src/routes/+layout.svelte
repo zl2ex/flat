@@ -1,0 +1,136 @@
+<script lang="ts">
+	import './styles.css';
+	import Hamburger from '$lib/componets/Hamburger.svelte';
+
+	let menuOpen = $state(false);
+	
+	function handleAllAnchorClicks(event: Event) 
+	{
+		//close the menu if a user clicks a link in navigation
+		if (event.target.tagName === 'A') 
+		{
+			menuOpen = false;
+		}
+	}
+</script>
+
+<div class="app">
+	
+	<header>
+		<div class="corner">
+			<Hamburger bind:active={menuOpen}/>
+		</div>
+	</header>
+
+
+	<section>
+		<nav on:click={handleAllAnchorClicks} class={menuOpen ? "" : "closed"}>
+			<a href="/">Home</a>
+		</nav>
+		<main>
+			<slot/>
+		</main>
+	</section>
+</div>
+
+<style>
+
+	header
+	{
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		background-color: var(--app-color-neutral-400);
+		
+	}
+	
+	header .corner
+	{
+			display: flex;
+			align-items: center;
+			
+			
+	}
+
+	header .corner img
+	{
+		width: 2rem;
+		height: 2rem;
+		object-fit: contain;
+	}
+
+	.Hamburger
+	{
+		display: flex;
+
+	}
+
+
+	section
+	{
+		display: flex;
+		flex: 1;
+		flex-direction: row;
+	}
+
+	main
+	{
+		flex: 1;
+		flex-wrap: wrap;
+		display: flex;
+		flex-direction: row;
+		align-items: start;
+		justify-content: center;
+	}
+
+	nav
+	{
+		display: flex;
+		flex: 0;
+		flex-direction: column;
+		justify-content: start;
+		background-color: brown;
+		z-index: 10;
+	}
+
+	nav a
+	{
+		display: flex;
+		align-items: center;
+		padding: 0.5rem 0.5rem;
+		color: inherit;
+		font-size: 0.8rem;
+		text-transform: uppercase;
+		letter-spacing: 0.1rem;
+		text-decoration: none;
+	}
+
+	footer
+	{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+
+	/*on mobile show hamburger and have a closable side menu*/
+	@media only screen and (max-aspect-ratio: 0.7)
+	{
+		section nav 
+		{
+			position: absolute;
+			padding-top: 4rem;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			box-shadow: 0 2px 4px 0 rgba(0,0,0,.2);
+		}
+
+		section nav.closed 
+		{
+			display: none;
+		}
+	}
+
+</style>

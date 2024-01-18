@@ -1,42 +1,16 @@
 import mongoose from 'mongoose';
 
-export type Chore = {
-    name: string;
-    email: string;
-};
+export type Chore = string;
 
-export interface ChoreInput extends Chore {
-    password: string;
-};
 
-export interface ChoreDocument extends ChoreInput, mongoose.Document {
-    
-}
-
-const userSchema = new mongoose.Schema({
-    username: {
+const ChoreSchema = new mongoose.Schema({
+    chore: {
         type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
+        reqired: true
+    }
 });
 
-
-
-userSchema.pre('save', async function (this: ChoreDocument) {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(this.password, salt);
-    this.password = hashedPassword;
-});
 
 // WIP only overwrite if it doesnt exist
 
- export const UserModel = mongoose.model('User', userSchema);
+ export const ChoreModel = mongoose.model('Chores', ChoreSchema);
