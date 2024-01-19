@@ -24,10 +24,9 @@ export async function getRoster(): Promise<Array<Roster>>
     // is there already a roster made ?
     if(currentRoster.length > 0)
     {
-        console.log(currentRoster[0]);
         // if less than 1 week has passed since the last roster was made
         if(currentRoster[0].created.getTime() +
-            oneWeekInMilliseconds < Date.now())
+            oneWeekInMilliseconds > Date.now())
         {
             console.log("already have roster");
             return currentRoster[0].roster;

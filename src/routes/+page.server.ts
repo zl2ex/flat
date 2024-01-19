@@ -1,22 +1,14 @@
 import { connectToDatabase } from "$lib/mongodb/db";
 //import { collections } from "$lib/mongodb/collections";
 import { getPeopleCooking } from "$lib/mongodb/person";
-import { getRoster, type Roster } from "$lib/mongodb/roster";
+import { days, getRoster, updateRoster, type Roster } from "$lib/mongodb/roster";
+import type { RequestEvent } from "./$types.js";
 
 connectToDatabase();
-
-//PersonModel.create({name: "Amber", choresDone: { chores: [], total: 0 }, cookingDone: { days: [], total: 0 }});
-
-//people.insertOne(new Person("dylan"));
-
 
 
 export async function load()
 {
-    //const roster = await createRoster();
-
-    
-    
     return {
         peopleCooking: await getPeopleCooking(),
         roster: await getRoster()
@@ -25,5 +17,16 @@ export async function load()
 
 
 export const actions = {
-    
+    updateRoster: async (event: RequestEvent) => {
+
+        const data = await event.request.formData();
+        let newRoster: Array<Roster> = [];
+        for(let i = 0; i < days.length; i++)
+        {
+            newRoster[i] = { day: days[i], person: data.get(days[i]) as string };
+        }
+
+        console.log(newRoster);
+        updateRoster(newRoster);
+    }
 }

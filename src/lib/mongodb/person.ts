@@ -13,7 +13,7 @@ type Day = {
 
 
 type CookingDone = {
-    stats: Array<Day>; 
+    stats: Array<Day>;
     lastCooked: Date;
     isCooking: boolean;
     isCookingNextWeek: boolean;
@@ -74,5 +74,7 @@ export class Person
         }
     }
 }
+
+//people.insertOne(new Person("dylan"));
 
 export const people = db.collection<Person>('people');

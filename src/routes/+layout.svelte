@@ -78,9 +78,9 @@
 		flex: 1;
 		flex-wrap: wrap;
 		display: flex;
-		flex-direction: row;
-		align-items: start;
-		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		justify-content: start;
 	}
 
 	nav
