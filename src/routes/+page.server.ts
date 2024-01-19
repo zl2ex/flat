@@ -1,33 +1,25 @@
 import { connectToDatabase } from "$lib/mongodb/db";
-import { collections } from "$lib/mongodb/collections";
+//import { collections } from "$lib/mongodb/collections";
+import { getPeopleCooking } from "$lib/mongodb/person";
+import { getRoster, type Roster } from "$lib/mongodb/roster";
 
 connectToDatabase();
 
 //PersonModel.create({name: "Amber", choresDone: { chores: [], total: 0 }, cookingDone: { days: [], total: 0 }});
 
-collections.people.insertOne({
-    name: "tasman",
-    choresDone: { 
-        chores: { 
-            vaccuming: 0 
-        },
-        total: 0
-    },
-    cookingDone: {
-        day: {
-            mon: 0
-        },
-        total: 0
-    }
-});
+//people.insertOne(new Person("dylan"));
+
+
 
 export async function load()
 {
-    const flatMembers = await collections.people.find({}).toArray();
+    //const roster = await createRoster();
+
+    
     
     return {
-        //allChores: chores,
-        allPeople: flatMembers
+        peopleCooking: await getPeopleCooking(),
+        roster: await getRoster()
     }
 }
 
