@@ -1,8 +1,8 @@
-import { people } from "$lib/mongodb/person";
+import { users } from "$lib/mongodb/user";
 import { chores } from "$lib/mongodb/chore";
 
 
 export const collections = {
-	people: people,
+	people: users,
 	chores: chores
 }

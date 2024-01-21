@@ -20,6 +20,8 @@
 		<div class="corner">
 			<Hamburger bind:active={menuOpen}/>
 		</div>
+		<h2>Cooking</h2>
+		<div class="corner"></div>
 	</header>
 
 
@@ -43,13 +45,16 @@
 		background-color: var(--app-color-neutral-400);
 		
 	}
+
+	header h2 
+	{
+		margin: 0;
+	}
 	
 	header .corner
 	{
-			display: flex;
-			align-items: center;
-			
-			
+		display: flex;
+		align-items: center;
 	}
 
 	header .corner img

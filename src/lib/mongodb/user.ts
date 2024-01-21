@@ -12,7 +12,7 @@ type Day = {
 };
 
 
-type CookingDone = {
+type Cooking = {
     stats: Array<Day>;
     lastCooked: Date;
     isCooking: boolean;
@@ -20,10 +20,10 @@ type CookingDone = {
     total: number;
 };
 
-export async function getPeopleCooking(): Promise<Array<Person>>
+export async function getPeopleCooking(): Promise<Array<User>>
 {
-    let peopleCooking: Array<Person> = [];
-    const allPeople = await people.find({}).toArray();
+    let peopleCooking: Array<User> = [];
+    const allPeople = await users.find({}).toArray();
     for(let i = 0; i < allPeople.length; i++)
     {
         if(allPeople[i].cooking.isCooking) 
@@ -34,11 +34,11 @@ export async function getPeopleCooking(): Promise<Array<Person>>
     return peopleCooking;
 }
 
-export class Person
+export class User
 {
     public _id: string;
     public chores: ChoresDone;
-    public cooking: CookingDone;
+    public cooking: Cooking;
 
 
     constructor(name: string) 
@@ -75,6 +75,6 @@ export class Person
     }
 }
 
-//people.insertOne(new Person("dylan"));
+//users.insertOne(new User("dylan"));
 
-export const people = db.collection<Person>('people');
+export const users = db.collection<User>('users');

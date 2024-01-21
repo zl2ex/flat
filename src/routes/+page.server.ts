@@ -1,14 +1,15 @@
 import { connectToDatabase } from "$lib/mongodb/db";
 //import { collections } from "$lib/mongodb/collections";
-import { getPeopleCooking } from "$lib/mongodb/person";
+import { getPeopleCooking } from "$lib/mongodb/user.js";
 import { days, getRoster, updateRoster, type Roster } from "$lib/mongodb/roster";
 import type { RequestEvent } from "./$types.js";
 
 connectToDatabase();
 
 
-export async function load()
+export async function load({cookie})
 {
+    console.log(cookie);
     return {
         peopleCooking: await getPeopleCooking(),
         roster: await getRoster()

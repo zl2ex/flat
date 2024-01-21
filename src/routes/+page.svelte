@@ -3,6 +3,7 @@
     
     const { data } = $props();
 
+    
 
     function submitForm()
     {
@@ -18,15 +19,15 @@
 
 </script>
 
-
-
-
-<h1>Cooking</h1>
-
+<p></p>
 <form id="cooking"
     action="?/updateRoster"
     method="POST"
-    use:enhance>
+    use:enhance={() => {
+        return async ({ update }) => {
+            update({ reset: false });
+        };
+    }}>
     <table>
         <thead>
             <tr>
@@ -40,7 +41,8 @@
                         <select name={roster.day} value={roster.person} on:input={submitForm}>
                             {#each data.peopleCooking as person}
                                 <option value={person._id}>{person._id}</option>
-                            {/each}               
+                            {/each}             
+                            <option value=""></option>
                         </select>
                     </td>
                 </tr>
@@ -50,3 +52,10 @@
     <button>submit</button>
 </form>
 
+
+
+<style>
+    td {
+        padding: 0.1rem 0.5rem;
+    }
+</style>

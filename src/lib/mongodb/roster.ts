@@ -1,5 +1,5 @@
 import db from '$lib/mongodb/db';
-import { people } from '$lib/mongodb/person';
+import { users } from '$lib/mongodb/user';
 
 export let days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
@@ -33,7 +33,7 @@ export async function getRoster(): Promise<Array<Roster>>
         }
     }
 
-    let flatMembers = await people.find({}).toArray();
+    let flatMembers = await users.find({}).toArray();
 
     if(flatMembers.length <= 0) return [];
 
@@ -59,7 +59,18 @@ export async function getRoster(): Promise<Array<Roster>>
         {
             offset -= flatMembers.length;
         }
-        newRoster[j] = { day: day, person: flatMembers[j + offset]._id };
+
+        // no person assigned on skips days
+        if(skipDays.filter(str => str.includes(day)).length)
+        {
+            newRoster[j] = { day: day, person: "" };
+            offset--;
+        }
+        else
+        {
+            newRoster[j] = { day: day, person: flatMembers[j + offset]._id };
+        }
+        
     }
 
     updateRoster(newRoster);

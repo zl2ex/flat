@@ -2,10 +2,13 @@ import db from '$lib/mongodb/db';
 
 
 export type Chores = {
-    name: string;
+    _id: string;
+    details: string;
 }
 
-export const chores = [ //  = db.collection<Chores>('chores');
-    "vaccuming",
-    "moping"
-];
+
+
+
+export const chores = db.collection<Chores>('chores');
+
+//chores.insertOne({_id: "vaccuming", details: "pretty self explanitary"});
