@@ -17,22 +17,24 @@ let skipDays = ['sat'];
 
 var oneWeekInMilliseconds = 7 * 24 * 60 * 60 * 1000;
 
-export async function getRoster(): Promise<Array<Roster>>
+export async function getRoster(props: { generateNew: boolean }): Promise<Array<Roster>>
 {
-
-    let currentRoster = await roster.find({}).toArray();
-    // is there already a roster made ?
-    if(currentRoster.length > 0)
+    if(props.generateNew == false) 
     {
-        // if less than 1 week has passed since the last roster was made
-        if(currentRoster[0].created.getTime() +
-            oneWeekInMilliseconds > Date.now())
+        let currentRoster = await roster.find({}).toArray();
+    // is there already a roster made ?
+        if(currentRoster.length > 0)
         {
-            console.log("already have roster");
-            return currentRoster[0].roster;
+            // if less than 1 week has passed since the last roster was made
+            if(currentRoster[0].created.getTime() +
+                oneWeekInMilliseconds > Date.now())
+            {
+                console.log("already have roster");
+                return currentRoster[0].roster;
+            }
         }
     }
-
+    
     let flatMembers = await users.find({}).toArray();
 
     if(flatMembers.length <= 0) return [];
@@ -79,28 +81,7 @@ export async function getRoster(): Promise<Array<Roster>>
 
 export async function updateRoster(newRoster: Array<Roster>)
 {
-    /*
-    let currentRoster = await roster.find({}, { limit: 1 }).toArray();
-    let haveRoster = currentRoster.length;
-    console.log("haveRoster", haveRoster);
-    // update existing roster
-    if(haveRoster)
-    {
-        roster.updateOne({_id: currentRoster[0]._id }, { $set: {
-            created: new Date(),
-            roster: newRoster
-        } as DbRoster });
-    }
-
-    // create new roster
-    else
-    {
-        roster.insertOne({
-            created: new Date(),
-            roster: newRoster
-        } as DbRoster);
-    }
-*/
+    // upsert: true - create if it doesnt exist
     roster.updateOne({}, { $set: {
         created: new Date(),
         roster: newRoster

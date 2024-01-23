@@ -1,7 +1,8 @@
 <script lang="ts">
+    import type { ActionData, PageData } from './$types';
     import { enhance } from '$app/forms';
 
-    let { data } = $props();
+    let { data, form} = $props<{data: PageData, form: ActionData}>();
 
 </script>
 
@@ -16,11 +17,25 @@
 
     <h2>Login</h2>
     <div class="form-item">
-        <label for="email">Name</label>
-        <input name="_id" type="email"/>
+        <label for="id">Name</label>
+        <select name="id">
+            {#each data.users as user}
+                <option value={user._id}>{user._id}</option>
+            {/each}
+        </select>
+    </div>
+    <div class="form-item">
+        <label for="password">Password</label>
+        <input name="password" type="password"/>
     </div>
     <div class="form-item">
         <button class="primary" type="submit">Login</button>
+    </div>
+
+    <div class="form-item">
+        {#if form?.sucsess == false}
+            <p>{form?.message}</p>
+        {/if}
     </div>
 </form>
 

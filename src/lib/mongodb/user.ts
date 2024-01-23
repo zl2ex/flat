@@ -1,9 +1,9 @@
 import db from '$lib/mongodb/db';
-import { chores } from "$lib/mongodb/chore";
+import { allChores } from "$lib/mongodb/chore";
 
 type ChoresDone = {
-    chores: object;
-    total: number;
+    chore: string;
+    count: number;
 };
 
 type Day = {
@@ -20,7 +20,7 @@ type Cooking = {
     total: number;
 };
 
-export async function getPeopleCooking(): Promise<Array<User>>
+export async function getUsersCooking(): Promise<Array<User>>
 {
     let peopleCooking: Array<User> = [];
     const allPeople = await users.find({}).toArray();
@@ -37,25 +37,20 @@ export async function getPeopleCooking(): Promise<Array<User>>
 export class User
 {
     public _id: string;
-    public chores: ChoresDone;
+    public chores: Array<ChoresDone>;
     public cooking: Cooking;
-
 
     constructor(name: string) 
     {
         this._id = name;
 
-        // create an object with all the chores as keys and the value as number of times done
-        let initChores = {};
-        for(let i = 0; i < chores.length; i++)
+        let initChores = [];
+        for(let i = 0; i < allChores.length; i++)
         {
-            Object.defineProperty(initChores, chores[i], { value: 0, enumerable: true });
+            initChores[i] = { chore: allChores[i]._id, count: 0 };
         }
 
-        this.chores = { 
-            chores: initChores,
-            total: 0
-        };
+        this.chores = initChores;
 
         this.cooking = {
             stats: [
@@ -75,6 +70,7 @@ export class User
     }
 }
 
-//users.insertOne(new User("dylan"));
 
 export const users = db.collection<User>('users');
+
+//users.insertOne(new User("dylan"));

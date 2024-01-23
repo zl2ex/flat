@@ -1,18 +1,22 @@
 import { connectToDatabase } from "$lib/mongodb/db";
 //import { collections } from "$lib/mongodb/collections";
-import { getPeopleCooking } from "$lib/mongodb/user.js";
+import { getUsersCooking } from "$lib/mongodb/user.js";
 import { days, getRoster, updateRoster, type Roster } from "$lib/mongodb/roster";
 import type { RequestEvent } from "./$types.js";
+import { redirect } from "@sveltejs/kit";
 
 connectToDatabase();
 
 
-export async function load({cookie})
+export async function load({cookies})
 {
-    console.log(cookie);
+    if(cookies.get('token') == undefined)
+    {
+        throw redirect(302, "/login");
+    }
     return {
-        peopleCooking: await getPeopleCooking(),
-        roster: await getRoster()
+        peopleCooking: await getUsersCooking(),
+        roster: await getRoster({generateNew: false})
     }
 }
 

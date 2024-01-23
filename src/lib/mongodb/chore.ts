@@ -9,6 +9,10 @@ export type Chores = {
 
 
 
-export const chores = db.collection<Chores>('chores');
+//export const chores = db.collection<Chores>('chores');
+
+export const allChores: Array<Chores> = [
+    { _id: "vaccuming", details: "pretty self explanitary" }
+]
 
 //chores.insertOne({_id: "vaccuming", details: "pretty self explanitary"});

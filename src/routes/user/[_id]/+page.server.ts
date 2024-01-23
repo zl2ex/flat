@@ -1,5 +1,5 @@
 import { users } from "$lib/mongodb/user.js";
-import type { RequestEvent } from "../$types.js";
+import type { RequestEvent } from "./$types.js";
 
 
 

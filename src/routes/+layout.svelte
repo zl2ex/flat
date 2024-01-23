@@ -7,7 +7,7 @@
 	function handleAllAnchorClicks(event: Event) 
 	{
 		//close the menu if a user clicks a link in navigation
-		if (event.target.tagName === 'A') 
+		if (event.target && event.target.tagName === 'A') 
 		{
 			menuOpen = false;
 		}
@@ -42,8 +42,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		background-color: var(--app-color-neutral-400);
-		
+		background-color: var(--app-color-neutral-300);
 	}
 
 	header h2 
@@ -64,10 +63,9 @@
 		object-fit: contain;
 	}
 
-	.Hamburger
+	.corner .Hamburger
 	{
-		display: flex;
-
+		display: none;
 	}
 
 
@@ -135,6 +133,11 @@
 		section nav.closed 
 		{
 			display: none;
+		}
+
+		.corner .Hamburger 
+		{
+			display: block;
 		}
 	}
 
