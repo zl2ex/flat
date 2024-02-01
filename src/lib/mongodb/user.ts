@@ -70,7 +70,17 @@ export class User
     }
 }
 
-
 export const users = db.collection<User>('users');
+/*
+users.insertOne(new User("baxter"));
+users.insertOne(new User("mitchell"));
+users.insertOne(new User("nikita"));
+users.insertOne(new User("jack"));
+users.insertOne(new User("olivia"));
+users.insertOne(new User("amber"));
+users.insertOne(new User("dylan"));
+users.insertOne(new User("tasman"));
+users.insertOne(new User("ethan"));
+*/
 
-//users.insertOne(new User("dylan"));
+

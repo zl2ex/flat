@@ -55,7 +55,7 @@
     transition: background-color 200ms ease-in-out, transform 200ms ease-in-out;
     }
 
-    input[type="checkbox"].toggle:focus + label::before {
+    input[type="checkbox"].toggle:focus-visible + label::before {
     outline: 1px solid black;
     }
 
