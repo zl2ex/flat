@@ -6,41 +6,47 @@
 
 </script>
 
+<div id="login">
+    <form use:enhance={() => {
+            return async ({ update }) => {
+                update({ reset: false });
+            };
+        }}
+        method="POST"
+        action="?/login">
 
-<form use:enhance={() => {
-        return async ({ update }) => {
-            update({ reset: false });
-        };
-    }}
-    method="POST"
-    action="?/login">
+        <h2>Login</h2>
+        <div class="form-item">
+            <label for="id">Name</label>
+            <select class="custom-select" name="id">
+                {#each data.users as user}
+                    <option value={user._id}>{user._id}</option>
+                {/each}
+            </select>
+        </div>
+        <div class="form-item">
+            <label for="password">Password</label>
+            <input name="password" type="password"/>
+        </div>
+        <div class="form-item">
+            <button class="primary" type="submit">Login</button>
+        </div>
 
-    <h2>Login</h2>
-    <div class="form-item">
-        <label for="id">Name</label>
-        <select class="custom-select" name="id">
-            {#each data.users as user}
-                <option value={user._id}>{user._id}</option>
-            {/each}
-        </select>
-    </div>
-    <div class="form-item">
-        <label for="password">Password</label>
-        <input name="password" type="password"/>
-    </div>
-    <div class="form-item">
-        <button class="primary" type="submit">Login</button>
-    </div>
-
-    <div class="form-item">
-        {#if form?.sucsess == false}
-            <p>{form?.message}</p>
-        {/if}
-    </div>
-</form>
-
+        <div class="form-item">
+            {#if form?.sucsess == false}
+                <p>{form?.message}</p>
+            {/if}
+        </div>
+    </form>
+</div>
 
 <style>
+
+    #login
+    {
+        display: flex;
+        justify-content: center;
+    }
 
     form
     {
