@@ -68,10 +68,19 @@ async function generateRosters()
     }
 
 
-    // shift the next week roster into the current weeks roster
+    
     let nextWeek = await roster.findOne({_id: 'nextWeek'});
-    if(!nextWeek?.roster) { console.error("no next week document found"); return }
-    updateRoster({newRoster: nextWeek?.roster, week: 'thisWeek'});
+    // check if we have a next week roster
+    if(nextWeek)
+    { 
+        // shift the next week roster into the current weeks roster
+        updateRoster({newRoster: nextWeek?.roster, week: 'thisWeek'});
+    }
+    else
+    {
+        console.error("no next week Roster found, creating one"); 
+        updateRoster({newRoster: newRoster, week: 'nextWeek'});
+    }
 
     // create a new roster for the next week
     updateRoster({newRoster: newRoster, week: 'nextWeek'});
@@ -82,7 +91,7 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
     if(!props.generateNew) 
     {
         let currentRoster = await roster.findOne({_id: props.week});
-        console.log(currentRoster);
+        //console.log(currentRoster);
         // is there already a roster made ?
         if(currentRoster)
         {
@@ -90,6 +99,7 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
             // are we in the next week since the roster was made ?
             console.log(currentRoster.created.getWeek(), now.getWeek());
             if(currentRoster.created.getWeek() <= now.getWeek())
+            //if(true)
             {
                 console.log("already have roster");
                 return currentRoster.roster;
@@ -97,7 +107,8 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
         }
     }
     
-    generateRosters();
+    console.log("no roster found, generating");
+    await generateRosters();
     let updatedRoster = await roster.findOne({_id: props.week});
     return updatedRoster.roster;
 
@@ -105,13 +116,16 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
 
 export async function updateRoster(params: { newRoster: Array<Roster>, week: Week} )
 {
-    console.log("updateRoster");
+    console.log("updateRoster()");
     // upsert: true - create if it doesnt exist
-    roster.updateOne({ _id: params.week }, { $set: {
-        _id: params.week,
-        created: new Date(),
-        roster: params.newRoster
-    } as DbRoster }, { upsert: true });
+    roster.updateOne({ _id: params.week }, { 
+        $set: {
+            _id: params.week,
+            created: new Date(),
+            roster: params.newRoster
+        } as DbRoster }, { 
+            upsert: true 
+    });
 }   
 
 

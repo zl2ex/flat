@@ -9,7 +9,7 @@ export const handle: Handle = async ({ event, resolve }) => {
 
     event.locals.user = await authenticateUser(event);
 
-    console.log(event.locals.user);
+    //console.log(event.locals.user);
 
     // only the login page is unprotected uunless logged in
     if(event.locals.user || event.url.pathname.startsWith('/login'))

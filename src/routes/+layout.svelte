@@ -20,7 +20,7 @@
 		<div class="corner">
 			<Hamburger bind:active={menuOpen}/>
 		</div>
-		<h2>Cooking</h2>
+		<h2>27b Willis</h2>
 		<div class="corner"></div>
 	</header>
 
@@ -78,12 +78,14 @@
 
 	main
 	{
-		flex: 1;
+		/*flex: 1;
 		flex-wrap: wrap;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: start;
+		justify-content: start;*/
+		width: 100%;
+		min-height: 100%;
 	}
 
 	nav

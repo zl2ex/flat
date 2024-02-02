@@ -18,7 +18,7 @@
     <h2>Login</h2>
     <div class="form-item">
         <label for="id">Name</label>
-        <select name="id">
+        <select class="custom-select" name="id">
             {#each data.users as user}
                 <option value={user._id}>{user._id}</option>
             {/each}

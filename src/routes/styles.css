@@ -169,3 +169,54 @@ button
 {
     background-color: var(--app-color-secondary-400);
 }
+
+
+.custom-select 
+{
+    /*min-width: 100px;*/
+    /*width: 100px;*/
+    /*position: relative;*/
+}
+/*
+.custom-select::before,
+.custom-select::after
+{
+    --size: 0.3rem;
+    position: absolute;
+    content: "";
+    right: 1rem;
+    pointer-events: none;
+}
+
+.custom-select::before 
+{
+    border-left: var(--size) solid transparent;
+    border-right: var(--size) solid transparent;
+    border-bottom: var(--size) solid var(--app-color-neutral-500);
+    top: 40%;
+}
+
+.custom-select::after 
+{
+    border-left: var(--size) solid transparent;
+    border-right: var(--size) solid transparent;
+    border-top: var(--size) solid var(--app-color-neutral-500);
+    top: 55%;
+}
+  */
+select 
+{
+    /*appearance: none;
+    /* safari */
+    /*-webkit-appearance: none;
+    /* other styles for aesthetics */
+    /*width: 100%;    */
+    font-size: 1rem;
+    padding: 0.3rem 0.3rem 0.3rem 0.3rem;
+    background-color: var(--app-color-neutral-200);
+    border: 1px solid var(--app-color-neutral-400);
+    border-radius: 0.25rem;
+    color: inherit;
+    cursor: pointer;
+}
+

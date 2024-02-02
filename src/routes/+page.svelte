@@ -1,5 +1,6 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+    import Checkbox from '$lib/componets/Checkbox.svelte';
 
     const { data } = $props();
 
@@ -29,7 +30,7 @@
                 update({ reset: false });
             };
         }}>
-        <p>This Week</p>
+        <h2>This Week</h2>
         <table>
             <thead>
                 <tr>
@@ -41,7 +42,7 @@
                         <tr>
                             <td>{roster.day}</td>
                             <td>
-                                <select name={roster.day} value={roster.person} on:input={submitForm}>
+                                <select class="custom-select" name={roster.day} value={roster.person} on:input={submitForm}>
                                     {#each data.peopleCooking as person}
                                         <option value={person._id}>{person._id}</option>
                                     {/each}             
@@ -53,7 +54,9 @@
                 {/if}
             </tbody>
         </table>
-        <button>submit</button>
+        <div class="form-item">
+            <button type="submit" class="primary">save</button>
+        </div>
     </form>
 
 
@@ -65,7 +68,7 @@
                 update({ reset: false });
             };
         }}>
-        <p>Next Week</p>
+        <h2>Next Week</h2>
         <table>
             <thead>
                 <tr>
@@ -77,7 +80,7 @@
                         <tr>
                             <td>{roster.day}</td>
                             <td>
-                                <select name={roster.day} value={roster.person} on:input={submitForm}>
+                                <select class="custom-select" name={roster.day} value={roster.person} on:input={submitForm}>
                                     {#each data.peopleCooking as person}
                                         <option value={person._id}>{person._id}</option>
                                     {/each}             
@@ -89,17 +92,64 @@
                 {/if}
             </tbody>
         </table>
-        <button>submit</button>
+        <div class="form-item">
+            <button type="submit" class="primary">save</button>
+        </div>
     </form>
 
+    {#if data.user}
+    <!--
+        <form id="logout"
+            action="?/logout"
+            method="POST"
+            use:enhance>
+            
+                <div class="form-item">
+                    <h2>{data.user._id}</h2>
+                    <button type="submit">Logout</button>
+                </div>
+        </form>
+    -->
 
-    <form id="logout"
-        action="?/logout"
-        method="POST"
-        use:enhance>
-        <p>{data.user._id}</p>
-        <button type="submit">Logout</button>
-    </form>
+        <form id="user" 
+            action="?/updateUser"
+            method="POST"
+            use:enhance>
+
+                <div class="form-item">
+                    <h2>{data.user._id}</h2>
+                    
+                </div>
+
+                <div class="form-item">
+                    <Checkbox name="isCookingNextWeek" label="Cooking next week" bind:checked={data.user.cooking.isCookingNextWeek}></Checkbox>
+                    <Checkbox name="isCooking" label="cooking" bind:checked={data.user.cooking.isCooking}></Checkbox>
+                </div>
+
+                <div class="form-item">
+                    <h3>days cooked</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each data.user.cooking.stats as stats}
+                                <tr>
+                                    <td>{stats.day}</td>
+                                    <td>{stats.count}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="form-item">
+                    <button type="submit" class="primary">save</button>
+                </div>
+            </form>
+
+    {/if}
 
 </div>
 
@@ -107,12 +157,13 @@
 
 <style>
 
-    #home {
+    #home 
+    {
         display: flex;
         flex-direction: row;
         flex: 1;
         gap: 1rem;
-        align-content: space-between;
+        align-content: space-around;
         justify-content: center;
         flex-wrap: wrap;
     }
@@ -121,12 +172,43 @@
     {
         #home
         {
-            flex-direction: column;
+            flex-direction: column;    
+        }
+
+        form
+        {
+            width: 100%;
         }
     }
 
 
-    td {
+    td 
+    {
         padding: 0.1rem 0.5rem;
+        /*border-bottom: 0.1rem solid var(--app-color-neutral-500);*/
     }
+
+    form 
+    {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        border: 0.1rem solid var(--app-color-neutral-500);
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .form-item
+    {
+        display: flex;
+        flex-direction: column;
+    }
+
+    h2,
+    h3
+    {
+        margin: 0;
+    }
+
+
 </style>

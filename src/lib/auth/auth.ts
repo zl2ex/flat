@@ -53,7 +53,7 @@ export async function authenticateUser(event: RequestEvent): Promise<User | null
         try
         {
             const jwtUser = jwt.verify(token, PRIVATE_KEY);
-            console.log("jwtUser", jwtUser);
+            //console.log("jwtUser", jwtUser);
             const user = await users.findOne({_id: jwtUser._id });
             return user;
         } 

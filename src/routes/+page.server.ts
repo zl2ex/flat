@@ -1,7 +1,7 @@
 import { connectToDatabase } from "$lib/mongodb/db";
 //import { collections } from "$lib/mongodb/collections";
-import { getUsersCooking } from "$lib/mongodb/user.js";
-import { days, getRoster, updateRoster, type Roster } from "$lib/mongodb/roster";
+import { User, getUsersCooking, users } from "$lib/mongodb/user.js";
+import { days, getRoster, roster, type Roster } from "$lib/mongodb/roster";
 import type { RequestEvent } from "./$types.js";
 import { redirect } from "@sveltejs/kit";
 import { logoutUser } from "$lib/auth/auth.js";
@@ -36,7 +36,11 @@ export const actions = {
         }
 
         console.log(newRoster);
-        updateRoster({newRoster: newRoster, week: 'thisWeek'});
+        roster.updateOne({_id: 'thisWeek'}, { 
+            $set: {
+                roster: newRoster
+            }
+        });
     },
 
     updateNextWeek: async (event: RequestEvent) => {
@@ -49,10 +53,38 @@ export const actions = {
         }
 
         console.log(newRoster);
-        updateRoster({newRoster: newRoster, week: 'nextWeek'});
+        roster.updateOne({_id: 'nextWeek'}, { 
+            $set: {
+                roster: newRoster
+            }
+        });
     },
 
     logout: async (event: RequestEvent) => {
         logoutUser(event);
+    },
+
+    updateUser: async (event: RequestEvent) => {
+
+        const data = await event.request.formData();
+
+        let isCooking = data.get("isCooking") ? true : false ;
+        let isCookingNextWeek = data.get("isCookingNextWeek") ? true : false;
+
+        if(event.locals.user)
+        {
+            // make a copy of the current user
+            let cooking = event.locals.user.cooking;
+
+            // update feilds
+            cooking.isCooking = isCooking;
+            cooking.isCookingNextWeek = isCookingNextWeek;
+
+            users.updateOne({_id: event.locals.user._id}, {
+                $set: {
+                    cooking: cooking
+                }
+            })
+        }
     }
 }
