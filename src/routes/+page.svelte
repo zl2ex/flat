@@ -122,7 +122,6 @@
                 </div>
 
                 <div class="form-item">
-                    <Checkbox name="isCookingNextWeek" label="Cooking next week" bind:checked={data.user.cooking.isCookingNextWeek}></Checkbox>
                     <Checkbox name="isCooking" label="cooking" bind:checked={data.user.cooking.isCooking}></Checkbox>
                 </div>
 

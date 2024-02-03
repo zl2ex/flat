@@ -16,7 +16,6 @@ type Cooking = {
     stats: Array<Day>;
     lastCooked: Date;
     isCooking: boolean;
-    isCookingNextWeek: boolean;
     total: number;
 };
 
@@ -64,7 +63,6 @@ export class User
             ],
             lastCooked: new Date,
             isCooking: true,
-            isCookingNextWeek: true,
             total: 0
         }
     }
@@ -83,4 +81,15 @@ users.insertOne(new User("tasman"));
 users.insertOne(new User("ethan"));
 */
 
+/*
+users.updateOne({_id: "baxter"}, { $set: new User("baxter")});
+users.updateOne({_id: "mitchell"}, { $set: new User("mitchell")});
+users.updateOne({_id: "nikita"}, { $set: new User("nikita")});
+users.updateOne({_id: "jack"}, { $set: new User("jack")});
+users.updateOne({_id: "olivia"}, { $set: new User("olivia")});
+users.updateOne({_id: "amber"}, { $set: new User("amber")});
+users.updateOne({_id: "dylan"}, { $set: new User("dylan")});
+users.updateOne({_id: "tasman"}, { $set: new User("tasman")});
+users.updateOne({_id: "ethan"}, { $set: new User("ethan")});
 
+*/

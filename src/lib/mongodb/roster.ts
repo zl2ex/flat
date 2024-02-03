@@ -3,6 +3,8 @@ import { users } from '$lib/mongodb/user';
 
 export let days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
 
+let spoofTime = "2024-02-03";
+
 export type Roster = {
     day: string;
     person: string;
@@ -27,10 +29,38 @@ Date.prototype.getWeek = function() {
 
 async function generateRosters()
 {
+    // Stats
+    let thisWeek = await roster.findOne({_id: 'thisWeek'});
+    if(thisWeek)
+    {
+        for(let i = 0; i < thisWeek.roster.length; i++)
+        {
+            let user = await users.findOne({_id: thisWeek.roster[i].person});
+            if(user)
+            {
+                let cooking = user.cooking;
+                // incriment cooked count for that day
+                cooking.stats[i].count++;
+
+                let now = new Date();
+                let lastCookedDate = new Date(now.getFullYear(), now.getMonth(), now.getDay() - 7 + i)
+                
+                console.log(days[i], user._id, cooking.stats[i].count, now, lastCookedDate);
+
+                cooking.lastCooked = lastCookedDate;
+                users.updateOne({_id: user._id}, {
+                    $set: {
+                        cooking: cooking
+                    }
+                });
+            }
+        }
+    }
+
+    //////////////////////////////////
+
     let flatMembers = await users.find({}).toArray();
-
-    if(flatMembers.length <= 0) return [];
-
+    if(flatMembers.length <= 0) return;
     flatMembers.sort((a, b) => a.cooking.lastCooked > b.cooking.lastCooked ? 1 : -1);
 
     // remove members who arent cooking
@@ -66,24 +96,22 @@ async function generateRosters()
         }
         
     }
-
-
     
     let nextWeek = await roster.findOne({_id: 'nextWeek'});
     // check if we have a next week roster
     if(nextWeek)
     { 
         // shift the next week roster into the current weeks roster
-        updateRoster({newRoster: nextWeek?.roster, week: 'thisWeek'});
+        await updateRoster({newRoster: nextWeek?.roster, week: 'thisWeek'});
     }
     else
     {
         console.error("no next week Roster found, creating one"); 
-        updateRoster({newRoster: newRoster, week: 'nextWeek'});
+        await updateRoster({newRoster: newRoster, week: 'nextWeek'});
     }
 
     // create a new roster for the next week
-    updateRoster({newRoster: newRoster, week: 'nextWeek'});
+    await updateRoster({newRoster: newRoster, week: 'nextWeek'});
 }
 
 export async function getRoster(props: { week: Week, generateNew?: boolean }): Promise<Array<Roster> | null>
@@ -95,11 +123,10 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
         // is there already a roster made ?
         if(currentRoster)
         {
-            let now = new Date();
+            let now = new Date(spoofTime);
             // are we in the next week since the roster was made ?
             console.log(currentRoster.created.getWeek(), now.getWeek());
-            if(currentRoster.created.getWeek() <= now.getWeek())
-            //if(true)
+            if(currentRoster.created.getWeek() == now.getWeek())
             {
                 console.log("already have roster");
                 return currentRoster.roster;
@@ -107,7 +134,7 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
         }
     }
     
-    console.log("no roster found, generating");
+    console.log("roster out of date,  generating");
     await generateRosters();
     let updatedRoster = await roster.findOne({_id: props.week});
     return updatedRoster.roster;
@@ -118,10 +145,10 @@ export async function updateRoster(params: { newRoster: Array<Roster>, week: Wee
 {
     console.log("updateRoster()");
     // upsert: true - create if it doesnt exist
-    roster.updateOne({ _id: params.week }, { 
+    await roster.updateOne({ _id: params.week }, { 
         $set: {
             _id: params.week,
-            created: new Date(),
+            created: new Date(spoofTime),
             roster: params.newRoster
         } as DbRoster }, { 
             upsert: true 
