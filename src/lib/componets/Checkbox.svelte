@@ -5,7 +5,7 @@
 
 <div id="container">
     <span id="labelText">{label}</span>
-    <input type="checkbox" name={name} id={name} class="toggle" bind:checked>
+    <input type="checkbox" name={name} id={name} class="toggle" bind:checked on:input>
     <label for={name}>
         <div></div>
     </label>
@@ -64,10 +64,11 @@
         transition: background-color 200ms ease-in-out, transform 200ms ease-in-out;
     }
 
+    /*
     input[type="checkbox"].toggle:focus-visible + label::before {
         outline: 1px solid black;
     }
-
+*/
     input[type="checkbox"].toggle:checked + label::before {
         background-color: hsl(100, 70%, 90%);
     }

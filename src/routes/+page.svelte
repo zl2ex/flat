@@ -1,26 +1,38 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
     import Checkbox from '$lib/componets/Checkbox.svelte';
+	import { onDestroy, onMount } from 'svelte';
 
     const { data } = $props();
 
-    
+    let timer: number | undefined;
 
-    function submitForm()
+    let day = new Date().getDay();
+
+    onMount(() => {
+        // set timer to request page data every 10 seconds
+        timer = setInterval(invalidateAll, 10000);
+    });
+
+    onDestroy(() => {
+        clearInterval(timer);
+    });
+
+    function autoSubmit(event: Event)
     {
-        console.log("input");
-        let form = document.querySelector("#cooking");
-        form.addEventListener('submit', (event) => {
-            event.preventDefault();
-            // Perform validation and processing here
-        });
-
-        //form.submit();
+        if(!event.target.form) return;
+        console.log(event.target.form);
+        event.target.form.requestSubmit();
     }
 
 </script>
 
 <div id="home">
+
+
+
+    <p>{data.usersEating}</p>
 
     <form id="cookingThisWeek"
         action="?/updateThisWeek"
@@ -34,29 +46,33 @@
         <table>
             <thead>
                 <tr>
+                    <td>Day</td>
+                    <td>Cooking</td>
+                    <td>Present</td>
                 </tr>
             </thead>
             <tbody>
-                {#if data.roster}
-                    {#each data.roster as roster}
+                {#if data.roster && data.user}
+                    {#each data.roster as roster, idx}
                         <tr>
                             <td>{roster.day}</td>
-                            <td>
-                                <select class="custom-select" name={roster.day} value={roster.person} on:input={submitForm}>
+                            <td class={day == idx ? "today" : ""}>
+                                <select class="custom-select" name={roster.day} value={roster.person} on:input={autoSubmit}>
                                     {#each data.peopleCooking as person}
                                         <option value={person._id}>{person._id}</option>
                                     {/each}             
                                     <option value=""></option>
                                 </select>
                             </td>
+                            <td>
+                                <Checkbox name={`isEating_${roster.day}`} bind:checked={data.user.cooking.eating[idx].isEating} on:input={autoSubmit}></Checkbox>
+                            </td>
                         </tr>
                     {/each}
                 {/if}
             </tbody>
         </table>
-        <div class="form-item">
-            <button type="submit" class="primary">save</button>
-        </div>
+        
     </form>
 
 
@@ -80,7 +96,7 @@
                         <tr>
                             <td>{roster.day}</td>
                             <td>
-                                <select class="custom-select" name={roster.day} value={roster.person} on:input={submitForm}>
+                                <select class="custom-select" name={roster.day} value={roster.person} on:input={autoSubmit}>
                                     {#each data.peopleCooking as person}
                                         <option value={person._id}>{person._id}</option>
                                     {/each}             
@@ -92,9 +108,7 @@
                 {/if}
             </tbody>
         </table>
-        <div class="form-item">
-            <button type="submit" class="primary">save</button>
-        </div>
+        
     </form>
 
     {#if data.user}
@@ -122,7 +136,7 @@
                 </div>
 
                 <div class="form-item">
-                    <Checkbox name="isCooking" label="cooking" bind:checked={data.user.cooking.isCooking}></Checkbox>
+                    <Checkbox name="isCooking" label="cooking" bind:checked={data.user.cooking.isCooking} on:input={autoSubmit}></Checkbox>
                 </div>
 
                 <div class="form-item">
@@ -142,12 +156,7 @@
                         </tbody>
                     </table>
                 </div>
-
-                <div class="form-item">
-                    <button type="submit" class="primary">save</button>
-                </div>
             </form>
-
     {/if}
 
 </div>
@@ -207,6 +216,11 @@
     h3
     {
         margin: 0;
+    }
+
+    .today
+    {
+        border: 0.1rem solid var(--app-color-primary-600);
     }
 
 

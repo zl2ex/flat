@@ -1,6 +1,6 @@
 import { connectToDatabase } from "$lib/mongodb/db";
 //import { collections } from "$lib/mongodb/collections";
-import { User, getUsersCooking, users } from "$lib/mongodb/user.js";
+import { User, getUsersCooking, getUsersEating, users } from "$lib/mongodb/user.js";
 import { days, getRoster, roster, type Roster } from "$lib/mongodb/roster";
 import type { RequestEvent } from "./$types.js";
 import { redirect } from "@sveltejs/kit";
@@ -16,9 +16,14 @@ export async function load({cookies, locals})
     {
         throw redirect(302, "/login");
     }
+
+    let now = new Date();
+
+
     return {
         user: locals.user,
         peopleCooking: await getUsersCooking(),
+        usersEating: await getUsersEating(now.getDay()),
         roster: await getRoster({week: 'thisWeek'}),
         nextWeeksRoster: await getRoster({week: 'nextWeek'})
     }
@@ -30,17 +35,34 @@ export const actions = {
 
         const data = await event.request.formData();
         let newRoster: Array<Roster> = [];
+        let newEating: Array<{day: string, isEating: boolean}> = [];
+
         for(let i = 0; i < days.length; i++)
         {
             newRoster[i] = { day: days[i], person: data.get(days[i]) as string };
+            newEating[i] = { day: days[i], isEating: data.get(`isEating_${days[i]}`) ? true : false}
         }
 
         console.log(newRoster);
+        console.log(newEating);
         roster.updateOne({_id: 'thisWeek'}, { 
             $set: {
                 roster: newRoster
             }
         });
+
+        if(event.locals.user)
+        {
+            let newCooking = event.locals.user.cooking;
+
+            newCooking.eating = newEating;
+
+            users.updateOne({_id: event.locals.user._id}, {
+                $set: {
+                    cooking: newCooking
+                }
+            });
+        }
     },
 
     updateNextWeek: async (event: RequestEvent) => {
@@ -69,7 +91,6 @@ export const actions = {
         const data = await event.request.formData();
 
         let isCooking = data.get("isCooking") ? true : false ;
-        let isCookingNextWeek = data.get("isCookingNextWeek") ? true : false;
 
         if(event.locals.user)
         {
@@ -78,7 +99,6 @@ export const actions = {
 
             // update feilds
             cooking.isCooking = isCooking;
-            cooking.isCookingNextWeek = isCookingNextWeek;
 
             users.updateOne({_id: event.locals.user._id}, {
                 $set: {

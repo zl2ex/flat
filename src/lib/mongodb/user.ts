@@ -16,21 +16,35 @@ type Cooking = {
     stats: Array<Day>;
     lastCooked: Date;
     isCooking: boolean;
-    total: number;
+    eating: Array<{day: string, isEating: boolean}>;
 };
 
 export async function getUsersCooking(): Promise<Array<User>>
 {
-    let peopleCooking: Array<User> = [];
-    const allPeople = await users.find({}).toArray();
-    for(let i = 0; i < allPeople.length; i++)
+    let usersCooking: Array<User> = [];
+    const allUsers = await users.find({}).toArray();
+    for(let i = 0; i < allUsers.length; i++)
     {
-        if(allPeople[i].cooking.isCooking) 
+        if(allUsers[i].cooking.isCooking) 
         {
-            peopleCooking.push(allPeople[i]);
+            usersCooking.push(allUsers[i]);
         }
     }
-    return peopleCooking;
+    return usersCooking;
+}
+
+export async function getUsersEating(day: number)
+{
+    let usersEating = 0;
+    const allUsers = await users.find({}).toArray();
+    for(let i = 0; i < allUsers.length; i++)
+    {
+        if(allUsers[i].cooking.eating[day].isEating) 
+        {
+            usersEating++;
+        }
+    }
+    return usersEating;
 }
 
 export class User
@@ -63,7 +77,15 @@ export class User
             ],
             lastCooked: new Date,
             isCooking: true,
-            total: 0
+            eating: [
+                { day: "mon", isEating: false },
+                { day: "tue", isEating: false },
+                { day: "wed", isEating: false },
+                { day: "thu", isEating: false },
+                { day: "fri", isEating: false },
+                { day: "sat", isEating: false },
+                { day: "sun", isEating: false },
+            ]
         }
     }
 }
@@ -91,5 +113,4 @@ users.updateOne({_id: "amber"}, { $set: new User("amber")});
 users.updateOne({_id: "dylan"}, { $set: new User("dylan")});
 users.updateOne({_id: "tasman"}, { $set: new User("tasman")});
 users.updateOne({_id: "ethan"}, { $set: new User("ethan")});
-
 */

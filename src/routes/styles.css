@@ -177,33 +177,7 @@ button
     /*width: 100px;*/
     /*position: relative;*/
 }
-/*
-.custom-select::before,
-.custom-select::after
-{
-    --size: 0.3rem;
-    position: absolute;
-    content: "";
-    right: 1rem;
-    pointer-events: none;
-}
 
-.custom-select::before 
-{
-    border-left: var(--size) solid transparent;
-    border-right: var(--size) solid transparent;
-    border-bottom: var(--size) solid var(--app-color-neutral-500);
-    top: 40%;
-}
-
-.custom-select::after 
-{
-    border-left: var(--size) solid transparent;
-    border-right: var(--size) solid transparent;
-    border-top: var(--size) solid var(--app-color-neutral-500);
-    top: 55%;
-}
-  */
 select 
 {
     /*appearance: none;
