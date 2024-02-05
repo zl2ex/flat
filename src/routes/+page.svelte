@@ -30,105 +30,97 @@
 
 <div id="home">
 
+    {#if data.user && data.roster && data.nextWeeksRoster}
 
+        {#if data.user._id == data.roster[day].person}
+            <div class="container">
+                <p>Your cooking tonight for {data.usersEating.length} people</p>
+                <p>Present</p>
+                {#each data.usersEating as eating}
+                    <p>{eating}</p>
+                {/each}
+            </div>
+        {/if}
 
-    <p>{data.usersEating}</p>
-
-    <form id="cookingThisWeek"
-        action="?/updateThisWeek"
-        method="POST"
-        use:enhance={() => {
-            return async ({ update }) => {
-                update({ reset: false });
-            };
-        }}>
-        <h2>This Week</h2>
-        <table>
-            <thead>
-                <tr>
-                    <td>Day</td>
-                    <td>Cooking</td>
-                    <td>Present</td>
-                </tr>
-            </thead>
-            <tbody>
-                {#if data.roster && data.user}
-                    {#each data.roster as roster, idx}
+        <div class="container">
+            <form id="cookingThisWeek"
+                action="?/updateThisWeek"
+                method="POST"
+                use:enhance={() => {
+                    return async ({ update }) => {
+                        update({ reset: false });
+                    };
+                }}>
+                <h2>This Week</h2>
+                <table>
+                    <thead>
                         <tr>
-                            <td>{roster.day}</td>
-                            <td class={day == idx ? "today" : ""}>
-                                <select class="custom-select" name={roster.day} value={roster.person} on:input={autoSubmit}>
-                                    {#each data.peopleCooking as person}
-                                        <option value={person._id}>{person._id}</option>
-                                    {/each}             
-                                    <option value=""></option>
-                                </select>
-                            </td>
-                            <td>
-                                <Checkbox name={`isEating_${roster.day}`} bind:checked={data.user.cooking.eating[idx].isEating} on:input={autoSubmit}></Checkbox>
-                            </td>
+                            <td>Day</td>
+                            <td>Cooking</td>
+                            <td>Present</td>
                         </tr>
-                    {/each}
-                {/if}
-            </tbody>
-        </table>
-        
-    </form>
+                    </thead>
+                    <tbody>
+                        {#each data.roster as roster, idx}
+                            <tr class={day == idx ? "today" : ""}>
+                                <td>{roster.day}</td>
+                                <td>
+                                    <select class="custom-select" name={roster.day} value={roster.person} on:input={autoSubmit}>
+                                        {#each data.peopleCooking as person}
+                                            <option value={person._id}>{person._id}</option>
+                                        {/each}             
+                                        <option value=""></option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <Checkbox name={`isEating_${roster.day}`} bind:checked={data.user.cooking.eating[idx].isEating} on:input={autoSubmit}></Checkbox>
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </form>
+        </div>
 
-
-    <form id="cookingNextWeek"
-        action="?/updateNextWeek"
-        method="POST"
-        use:enhance={() => {
-            return async ({ update }) => {
-                update({ reset: false });
-            };
-        }}>
-        <h2>Next Week</h2>
-        <table>
-            <thead>
-                <tr>
-                </tr>
-            </thead>
-            <tbody>
-                {#if data.nextWeeksRoster}
-                    {#each data.nextWeeksRoster as roster}
+        <div class="container">
+            <form id="cookingNextWeek"
+                action="?/updateNextWeek"
+                method="POST"
+                use:enhance={() => {
+                    return async ({ update }) => {
+                        update({ reset: false });
+                    };
+                }}>
+                <h2>Next Week</h2>
+                <table>
+                    <thead>
                         <tr>
-                            <td>{roster.day}</td>
-                            <td>
-                                <select class="custom-select" name={roster.day} value={roster.person} on:input={autoSubmit}>
-                                    {#each data.peopleCooking as person}
-                                        <option value={person._id}>{person._id}</option>
-                                    {/each}             
-                                    <option value=""></option>
-                                </select>
-                            </td>
                         </tr>
-                    {/each}
-                {/if}
-            </tbody>
-        </table>
-        
-    </form>
+                    </thead>
+                    <tbody>
+                        {#each data.nextWeeksRoster as roster}
+                            <tr>
+                                <td>{roster.day}</td>
+                                <td>
+                                    <select class="custom-select" name={roster.day} value={roster.person} on:input={autoSubmit}>
+                                        {#each data.peopleCooking as person}
+                                            <option value={person._id}>{person._id}</option>
+                                        {/each}             
+                                        <option value=""></option>
+                                    </select>
+                                </td>
+                            </tr>
+                        {/each}
+                    </tbody>
+                </table>
+            </form>
+        </div>
 
-    {#if data.user}
-    <!--
-        <form id="logout"
-            action="?/logout"
-            method="POST"
-            use:enhance>
-            
-                <div class="form-item">
-                    <h2>{data.user._id}</h2>
-                    <button type="submit">Logout</button>
-                </div>
-        </form>
-    -->
-
-        <form id="user" 
-            action="?/updateUser"
-            method="POST"
-            use:enhance>
+        <div class="container">
+            <form id="user" 
+                action="?/updateUser"
+                method="POST"
+                use:enhance>
 
                 <div class="form-item">
                     <h2>{data.user._id}</h2>
@@ -157,6 +149,8 @@
                     </table>
                 </div>
             </form>
+        </div>
+
     {/if}
 
 </div>
@@ -190,6 +184,11 @@
     }
 
 
+    table
+    {
+        border-collapse: collapse;
+    }
+
     td 
     {
         padding: 0.1rem 0.5rem;
@@ -201,6 +200,10 @@
         display: flex;
         flex-direction: column;
         gap: 1rem;
+    }
+
+    .container
+    {
         border: 0.1rem solid var(--app-color-neutral-500);
         border-radius: 0.5rem;
         padding: 1rem;
@@ -220,7 +223,12 @@
 
     .today
     {
-        border: 0.1rem solid var(--app-color-primary-600);
+        border: 0.2rem solid var(--app-color-primary-600);
+    }
+
+    .highlight
+    {
+        color: red;
     }
 
 

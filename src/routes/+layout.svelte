@@ -1,6 +1,9 @@
 <script lang="ts">
 	import './styles.css';
 	import Hamburger from '$lib/componets/Hamburger.svelte';
+	import { enhance } from '$app/forms';
+
+	const { data } = $props();
 
 	let menuOpen = $state(false);
 	
@@ -21,7 +24,17 @@
 			<Hamburger bind:active={menuOpen}/>
 		</div>
 		<h2>27b Willis</h2>
-		<div class="corner"></div>
+		<div class="corner">
+			{#if data.user}
+				<span>{data.user._id}</span>
+				<form id="logout"
+					action="?/logout"
+					method="POST"
+					use:enhance>
+					<button type="submit">logout</button>
+				</form>
+			{/if}
+		</div>
 	</header>
 
 
@@ -54,6 +67,7 @@
 	{
 		display: flex;
 		align-items: center;
+		flex-direction: column;
 	}
 
 	header .corner img

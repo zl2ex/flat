@@ -1,7 +1,7 @@
 import db from '$lib/mongodb/db';
-import { users } from '$lib/mongodb/user';
+import { getUsersCooking, users } from '$lib/mongodb/user';
 
-export let days = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+export let days = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
 
 let spoofTime = "2024-02-03";
 
@@ -20,11 +20,14 @@ interface DbRoster extends Roster {
 
 let skipDays = ['sat'];
 
+
 // adds getWeek of the year to Date
 Date.prototype.getWeek = function() {
     var onejan = new Date(this.getFullYear(),0,1);
     return Math.ceil((((this - onejan) / 86400000) + onejan.getDay()+1)/7);
 };
+
+
 
 
 async function generateRosters()
@@ -59,22 +62,13 @@ async function generateRosters()
 
     //////////////////////////////////
 
-    let flatMembers = await users.find({}).toArray();
-    if(flatMembers.length <= 0) return;
-    flatMembers.sort((a, b) => a.cooking.lastCooked > b.cooking.lastCooked ? 1 : -1);
+    let flatMembers = await getUsersCooking();
 
-    // remove members who arent cooking
-    for(let i = 0; i < flatMembers.length; i++)
-    {
-        if(flatMembers[i].cooking.isCooking == false)
-        {
-            flatMembers.splice(i, 1); // remove member
-        }
-    }
+    flatMembers.sort((a, b) => a.cooking.lastCooked > b.cooking.lastCooked ? 1 : -1);
 
     let newRoster: Array<Roster> = [];
     let offset = 0;
-    for(let j = 0; j < 7; j++)
+    for(let j = 0; j < days.length; j++)
     {
         let day = days[j];
         // if there are less members cooking than there are days in the week

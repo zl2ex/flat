@@ -16,10 +16,9 @@ export async function load({cookies, locals})
     {
         throw redirect(302, "/login");
     }
+    
 
     let now = new Date();
-
-
     return {
         user: locals.user,
         peopleCooking: await getUsersCooking(),
@@ -43,8 +42,6 @@ export const actions = {
             newEating[i] = { day: days[i], isEating: data.get(`isEating_${days[i]}`) ? true : false}
         }
 
-        console.log(newRoster);
-        console.log(newEating);
         roster.updateOne({_id: 'thisWeek'}, { 
             $set: {
                 roster: newRoster
@@ -53,13 +50,11 @@ export const actions = {
 
         if(event.locals.user)
         {
-            let newCooking = event.locals.user.cooking;
-
-            newCooking.eating = newEating;
+            event.locals.user.cooking.eating = newEating;
 
             users.updateOne({_id: event.locals.user._id}, {
                 $set: {
-                    cooking: newCooking
+                    cooking: event.locals.user.cooking
                 }
             });
         }
@@ -89,20 +84,16 @@ export const actions = {
     updateUser: async (event: RequestEvent) => {
 
         const data = await event.request.formData();
-
         let isCooking = data.get("isCooking") ? true : false ;
 
         if(event.locals.user)
         {
-            // make a copy of the current user
-            let cooking = event.locals.user.cooking;
-
             // update feilds
-            cooking.isCooking = isCooking;
+            event.locals.user.cooking.isCooking = isCooking;
 
             users.updateOne({_id: event.locals.user._id}, {
                 $set: {
-                    cooking: cooking
+                    cooking: event.locals.user.cooking
                 }
             })
         }

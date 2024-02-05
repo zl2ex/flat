@@ -1,5 +1,6 @@
 import db from '$lib/mongodb/db';
 import { allChores } from "$lib/mongodb/chore";
+import { days } from './roster';
 
 type ChoresDone = {
     chore: string;
@@ -33,15 +34,17 @@ export async function getUsersCooking(): Promise<Array<User>>
     return usersCooking;
 }
 
-export async function getUsersEating(day: number)
+// day 0=sun 1=mon ect..
+export async function getUsersEating(day: number ): Promise<Array<string>>
 {
-    let usersEating = 0;
+    if(day < 0 || day > 6) return ["day provided out of range"];
+    let usersEating: Array<string> = [];
     const allUsers = await users.find({}).toArray();
     for(let i = 0; i < allUsers.length; i++)
     {
         if(allUsers[i].cooking.eating[day].isEating) 
         {
-            usersEating++;
+            usersEating.push(allUsers[i]._id);
         }
     }
     return usersEating;
@@ -65,27 +68,19 @@ export class User
 
         this.chores = initChores;
 
+        let stats = [];
+        let eating = [];
+        for(let i = 0; i < days.length; i++)
+        {
+            stats[i] = { day: days[i], count: 0 };
+            eating[i] = { day: days[i], isEating: false };
+        }
+
         this.cooking = {
-            stats: [
-                { day: "mon", count: 0 },
-                { day: "tue", count: 0 },
-                { day: "wed", count: 0 },
-                { day: "thu", count: 0 },
-                { day: "fri", count: 0 },
-                { day: "sat", count: 0 },
-                { day: "sun", count: 0 },
-            ],
+            stats: stats,
             lastCooked: new Date,
             isCooking: true,
-            eating: [
-                { day: "mon", isEating: false },
-                { day: "tue", isEating: false },
-                { day: "wed", isEating: false },
-                { day: "thu", isEating: false },
-                { day: "fri", isEating: false },
-                { day: "sat", isEating: false },
-                { day: "sun", isEating: false },
-            ]
+            eating: eating
         }
     }
 }
