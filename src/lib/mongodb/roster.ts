@@ -108,7 +108,7 @@ async function generateRosters()
     await updateRoster({newRoster: newRoster, week: 'nextWeek'});
 }
 
-export async function getRoster(props: { week: Week, generateNew?: boolean }): Promise<Array<Roster> | null>
+export async function getRoster(props: { week: Week, generateNew?: boolean }): Promise<Array<Roster> | undefined>
 {
     if(!props.generateNew) 
     {
@@ -131,7 +131,7 @@ export async function getRoster(props: { week: Week, generateNew?: boolean }): P
     console.log("roster out of date,  generating");
     await generateRosters();
     let updatedRoster = await roster.findOne({_id: props.week});
-    return updatedRoster.roster;
+    return updatedRoster?.roster;
 
 }
 

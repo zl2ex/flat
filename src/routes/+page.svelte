@@ -6,7 +6,7 @@
 
     const { data } = $props();
 
-    let timer: number | undefined;
+    let timer: NodeJS.Timeout | undefined;
 
     let day = new Date().getDay();
 
@@ -172,12 +172,8 @@
 
     @media only screen and (max-aspect-ratio: 0.7)
     {
-        #home
-        {
-            flex-direction: column;    
-        }
 
-        form
+        .container 
         {
             width: 100%;
         }

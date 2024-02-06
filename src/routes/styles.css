@@ -6,7 +6,7 @@
 :root
 {
     --app-font-size-desktop: 16px;
-    --app-font-size-mobile: 24px;
+    --app-font-size-mobile-max: 24px;
 
     font-size: var(--app-font-size-desktop);
     font-family: sans-serif;
@@ -78,7 +78,7 @@
 {
     :root
     {
-        font-size: var(--app-font-size-mobile);
+        font-size: clamp(10px, 6vw, var(--app-font-size-mobile-max));
     }
 }
 
